@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Restaurant, MenuItem, User
 
 from flask import session as login_session
 import random, string
@@ -106,6 +106,11 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -149,6 +154,29 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return render_template('logout.html')
 
+# User Helper Functions
+
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
 def restaurantMenuJSON(restaurant_id):
@@ -193,6 +221,8 @@ def showRestaurants():
 def newRestaurant():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
+    if 'username' not in login_session:
+        return render_template('unauthorized.html')
     if request.method == 'POST':
         newRestaurant = Restaurant(name=request.form['name'])
         session.add(newRestaurant)
@@ -211,6 +241,8 @@ def editRestaurant(restaurant_id):
     session = DBSession()
     editedRestaurant = session.query(
         Restaurant).filter_by(id=restaurant_id).one()
+    if 'username' not in login_session:
+        return render_template('unauthorized.html')
     if request.method == 'POST':
         if request.form['name']:
             editedRestaurant.name = request.form['name']
@@ -230,6 +262,10 @@ def deleteRestaurant(restaurant_id):
     session = DBSession()
     restaurantToDelete = session.query(
         Restaurant).filter_by(id=restaurant_id).one()
+    if 'username' not in login_session:
+        return render_template('unauthorized.html')
+    if restaurantToDelete.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to delete this restaurant. Please create your own restaurant in order to edit a restaurant.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(restaurantToDelete)
         session.commit()
@@ -263,6 +299,8 @@ def showMenu(restaurant_id):
 def newMenuItem(restaurant_id):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
+    if 'username' not in login_session:
+        return render_template('unauthorized.html')
     if request.method == 'POST':
         newItem = MenuItem(name=request.form['name'], description=request.form[
                            'description'], price=request.form['price'], course=request.form['course'], restaurant_id=restaurant_id)
@@ -282,6 +320,8 @@ def editMenuItem(restaurant_id, menu_id):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     editedItem = session.query(MenuItem).filter_by(id=menu_id).one()
+    if 'username' not in login_session:
+        return render_template('unauthorized.html')
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -310,6 +350,8 @@ def deleteMenuItem(restaurant_id, menu_id):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     itemToDelete = session.query(MenuItem).filter_by(id=menu_id).one()
+    if 'username' not in login_session:
+        return render_template('unauthorized.html')
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
@@ -323,4 +365,3 @@ if __name__ == '__main__':
     app.secret_key = 'super secret key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
-
