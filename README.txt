@@ -8,5 +8,5 @@ To run the Restaurant application
 
 4. Run lotsofmenus.py to populate the database
 
-5. Run finalproject.py and navigate to localhost:5000 in your browser
+5. Run restaurantApp.py and navigate to localhost:5000 in your browser
 
