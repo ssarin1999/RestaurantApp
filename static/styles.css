@@ -1,0 +1,127 @@
+body            
+{ 
+    font-family: sans-serif; 
+    background-color: #333333;  
+    background-image: url('bg.jpg');
+}
+h10
+{
+    color: rgb(255, 255, 255); 
+}
+h1, h2, h3, h4, h7      
+{ 
+    color: rgb(255, 255, 255); 
+}
+h1, h2         
+{ 
+    font-family: 'Georgia', serif; 
+    margin: 0; 
+}
+h1             
+{ 
+    border-bottom: 2px solid rgb(255, 255, 255); 
+}
+h2              
+{ 
+    font-size: 1.2em; 
+}
+
+p               
+{ 
+    color: rgb(247, 242, 242);
+}
+
+a 
+{
+    text-decoration: none;
+     color:rgb(255, 255, 255); 
+     font-size: .75em;
+}
+
+.pane 
+{
+    position:absolute; 
+    left: 30%; 
+    top:12%;
+    border: 15px solid;
+    border-radius: 2px; 
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin: 5px; 
+    border-color: #fffcfc; 
+    background-color: #000000; 
+}
+.new 
+{
+    position:absolute; 
+    left: 90%; 
+    top:6%;
+    border: 2px solid;
+    border-radius: 2px; 
+    padding: 5px; 
+    margin: 5px; 
+    border-color: #fffcfc; 
+    background-color: #000000; 
+}
+.header         
+{
+    left:10%; 
+    text-align: left;
+}
+.name 
+{
+    width:50%;
+    display: inline-block; 
+    float: left;
+}
+.description 
+{
+
+}
+.price 
+{
+    text-align: right; 
+    width:50%; 
+    float: right; 
+}
+.editdeletepane
+{
+
+}
+
+.flash          
+{ 
+    background: #cee5F5; 
+}
+
+.login
+{
+    position:absolute; 
+    left: 92%;
+    top:0%;
+    border: 3px solid;
+    border-radius: 5px; 
+    padding: 5px; 
+    margin: 5px; 
+    border-color: #ffffff; 
+    background-color: #000000; 
+}
+.button
+{
+    position:absolute; 
+    left: 38%;
+    top:35%;
+    border: 3px solid;
+    border-radius: 5px; 
+    padding: 50px; 
+    margin: 5px; 
+    border-color: #ffffff; 
+    background-color: #000000; 
+}
+.logout
+{
+    position:absolute; 
+    left: 3%;
+}
