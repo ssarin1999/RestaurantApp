@@ -27,6 +27,15 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Create anti-forgery state token
+@app.route('/login')
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    login_session['state'] = state
+    # return "The current session state is %s" % login_session['state']
+    return render_template('login.html', STATE=state)
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -134,11 +143,11 @@ def gdisconnect():
         del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
-        return response
+        return render_template('logout.html')
     else:
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
-        return response
+        return render_template('logout.html')
 
 
 @app.route('/restaurant/<int:restaurant_id>/menu/JSON')
@@ -174,11 +183,9 @@ def showRestaurants():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     restaurants = session.query(Restaurant).all()
-    # return "This page will show all my restaurants"
-    state = ''.join(random.choice(string.ascii_uppercase + string.
-        digits) for x in xrange(32))
-    login_session['state'] = state
-    return render_template('restaurants.html', restaurants=restaurants)
+    if 'username' in login_session:
+        return render_template('restaurants.html', restaurants=restaurants)
+    return render_template('restaurantsNotLoggedIn.html', restaurants=restaurants)
 
 
 # Create a new restaurant
@@ -243,6 +250,8 @@ def showMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(
         restaurant_id=restaurant_id).all()
+    if 'username' not in login_session:
+        return render_template('menuNotLoggedIn.html', items=items, restaurant=restaurant)
     return render_template('menu.html', items=items, restaurant=restaurant)
     # return 'This page is the menu for restaurant %s' % restaurant_id
 
@@ -314,3 +323,4 @@ if __name__ == '__main__':
     app.secret_key = 'super secret key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
+
