@@ -1,10 +1,12 @@
-To run this final project
+To run the Restaurant application
 
-1. Navigate to the Full-Stack-Foundations/Lesson-4/Final-Project directory inside the vagrant environment
+1. Run 'vagrant up' and 'vagrant ssh'
 
-2. run database_setup.py to create the database
+2. Through Vagrant VM, travel to the RestaurantApp folder
 
-3. run lotsofmenus.py to populate the database
+3. Run database_setup.py to create the database
 
-4. run finalproject.py and navigate to localhost:5000 in your browser
+4. Run lotsofmenus.py to populate the database
+
+5. Run finalproject.py and navigate to localhost:5000 in your browser
 
