@@ -2,59 +2,18 @@
 
 <head>
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
-    <script>
-      function start() {
-        gapi.load('auth2', function () {
-          auth2 = gapi.auth2.init({
-            client_id: "881700926720-j7gqcig1ianjcfcvci80throgegn0lhf.apps.googleusercontent.com"
-          });
-        });
-	  }
-	</script>
 	</head>
 
 
 <body>
-		<button id="signinButton" class="button"><h10>LOGIN</h10></button>
-
-		<div id="result"></div>
-	
-		<script>
-		  $('#signinButton').click(function () {
-			function signInCallback(authResult) {
-			  if (authResult['code']) {
-				$('#signinButton').attr('style', 'display:none');
-				$.ajax({
-				  type: 'POST',
-				  url: '/gconnect?state={{STATE}}',
-				  processData: false,
-				  data: authResult['code'],
-				  contentType: 'application/octet-stream; charset=utf-8',
-				  success: function (result) {
-					if (result) {
-					  $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...');
-					  setTimeout(function () {
-						window.location.href = "/";
-					  }, 4000);
-					} else if (authResult['error']) {
-					  console.log('There was an error: ' + authResult['error']);
-					} else {
-					  $('#result').html('Failed to make a server-side call. Check your configuration and console.');
-					}
-				  }
-				});
-			  }
-			}
-			auth2.grantOfflineAccess().then(signInCallback);
-		  })
-		</script>
+		
 <div class = 'header'>
 	<h1>Restaurants Central</h1>
 </div>
+<div class = 'login'>
+		<a href = "{{url_for('gdisconnect')}}"> <h2>Logout</h2></a>
+</div>
 <div class = 'pane'>
-
 
 
 {% for restaurant in restaurants %}
@@ -78,3 +37,4 @@
 </body>
 
 </html>
+
