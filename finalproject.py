@@ -21,7 +21,7 @@ CLIENT_ID = json.loads(
 APPLICATION_NAME = "Restaurant Menu Application"
 app = Flask(__name__)
 
-engine = create_engine('sqlite:///restaurantmenu.db')
+engine = create_engine('sqlite:///restaurantmenuwithusers.db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -243,6 +243,8 @@ def editRestaurant(restaurant_id):
         Restaurant).filter_by(id=restaurant_id).one()
     if 'username' not in login_session:
         return render_template('unauthorized.html')
+    if editedRestaurant.user_id != login_session['user_id']:
+        return render_template('unauthorized.html')    
     if request.method == 'POST':
         if request.form['name']:
             editedRestaurant.name = request.form['name']
@@ -265,7 +267,7 @@ def deleteRestaurant(restaurant_id):
     if 'username' not in login_session:
         return render_template('unauthorized.html')
     if restaurantToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to delete this restaurant. Please create your own restaurant in order to edit a restaurant.');}</script><body onload='myFunction()''>"
+        return render_template('unauthorized.html')
     if request.method == 'POST':
         session.delete(restaurantToDelete)
         session.commit()
@@ -322,6 +324,8 @@ def editMenuItem(restaurant_id, menu_id):
     editedItem = session.query(MenuItem).filter_by(id=menu_id).one()
     if 'username' not in login_session:
         return render_template('unauthorized.html')
+    if editedItem.user_id != login_session['user_id']:
+        return render_template('unauthorized.html')     
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -352,6 +356,8 @@ def deleteMenuItem(restaurant_id, menu_id):
     itemToDelete = session.query(MenuItem).filter_by(id=menu_id).one()
     if 'username' not in login_session:
         return render_template('unauthorized.html')
+    if itemToDelete.user_id != login_session['user_id']:
+        return render_template('unauthorized.html') 
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
